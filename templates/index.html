@@ -463,16 +463,18 @@ function startScan() {
         method: 'POST',
         success: function(response) {
             hideLoadingModal();
-            
+
             if (response.status === 'success') {
                 // Show success notification
                 showAlert('success', `Scan completed! Found ${response.count} dump file(s) for analysis.`);
-                
+
                 // Redirect to results page
                 const resultsUrl = '/scan_results?results=' + encodeURIComponent(JSON.stringify(response.results));
                 window.location.href = resultsUrl;
             } else if (response.status === 'no_files') {
                 showAlert('info', 'No dump files found. Your system appears to be running smoothly!');
+            } else if (response.status === 'not_supported') {
+                showAlert('warning', response.message || 'Automatic scanning is only available on Windows systems.');
             }
         },
         error: function(xhr, status, error) {

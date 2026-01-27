@@ -318,12 +318,22 @@ def index():
 def scan_dumps():
     """Initiate dump file scan"""
     try:
+        import platform
+
         logging.info(f"Starting dump file scan for user: {current_user.username}")
-        
+
+        # Check if running on Windows
+        if platform.system() != 'Windows':
+            logging.warning("Dump file scanning only works on Windows systems")
+            return jsonify({
+                "status": "not_supported",
+                "message": "Automatic dump file scanning is only available on Windows systems. This feature scans C:\\Windows\\Minidump and other Windows-specific locations for crash dump files."
+            })
+
         if not file_scanner:
             logging.error("File scanner not available")
             return jsonify({"status": "error", "message": "File scanner not available"}), 500
-        
+
         # Scan for dump files
         scan_results = file_scanner.scan_directories()
         logging.info(f"Scan found {len(scan_results) if scan_results else 0} files")
