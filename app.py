@@ -1222,10 +1222,47 @@ def forbidden_error(error):
 def init_db():
     """Initialize database tables on startup"""
     try:
+        # First, add missing columns to existing tables (for shared database compatibility)
+        from sqlalchemy import text, inspect
+
+        inspector = inspect(db.engine)
+        if 'users' in inspector.get_table_names():
+            columns = [col['name'] for col in inspector.get_columns('users')]
+
+            # Add password_hash if missing
+            if 'password_hash' not in columns:
+                logging.info("Adding password_hash column to users table...")
+                print("MIGRATION: Adding password_hash column...")
+                db.session.execute(text("ALTER TABLE users ADD COLUMN password_hash VARCHAR(255)"))
+                db.session.commit()
+                print("✓ password_hash column added")
+
+            # Add last_login if missing
+            if 'last_login' not in columns:
+                logging.info("Adding last_login column to users table...")
+                print("MIGRATION: Adding last_login column...")
+                db.session.execute(text("ALTER TABLE users ADD COLUMN last_login TIMESTAMP"))
+                db.session.commit()
+                print("✓ last_login column added")
+
+            # Add is_active if missing
+            if 'is_active' not in columns:
+                logging.info("Adding is_active column to users table...")
+                print("MIGRATION: Adding is_active column...")
+                db.session.execute(text("ALTER TABLE users ADD COLUMN is_active BOOLEAN DEFAULT TRUE"))
+                db.session.commit()
+                print("✓ is_active column added")
+
+        # Now create any missing tables
         db.create_all()
         logging.info("Database tables created/verified successfully")
+        print("✓ Database initialization complete")
+
     except Exception as e:
         logging.error(f"Error initializing database: {str(e)}")
+        print(f"ERROR initializing database: {str(e)}")
+        import traceback
+        traceback.print_exc()
         db.session.rollback()
 
 # Create necessary directories
