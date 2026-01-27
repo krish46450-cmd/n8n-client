@@ -1,0 +1,76 @@
+{
+  "name": "dump-analyzer-desktop",
+  "version": "1.0.0",
+  "description": "Windows Dump Analyzer - Desktop Application",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux"
+  },
+  "keywords": [
+    "dump-analyzer",
+    "electron",
+    "desktop"
+  ],
+  "author": "Qriocity",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1"
+  },
+  "dependencies": {
+    "fix-path": "^4.0.0"
+  },
+  "build": {
+    "appId": "com.qriocity.dumpanalyzer",
+    "productName": "Dump Analyzer",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "static/**/*",
+      "templates/**/*",
+      "utils/**/*",
+      "knowledge_base/**/*",
+      "app.py",
+      "models.py",
+      "forms.py",
+      "config.py",
+      "requirements.txt",
+      ".env",
+      "instance/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "static/icon.ico"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "static/icon.icns",
+      "category": "public.app-category.developer-tools"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "static/icon.png",
+      "category": "Development"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
+  }
+}

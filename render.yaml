@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: client-app
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: client-db
+          property: connectionString
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SUPPORT_API_URL
+        value: https://your-support-dashboard-url.onrender.com/api/tickets
+      - key: SUPPORT_API_KEY
+        generateValue: true
+      - key: MAIL_SERVER
+        value: smtp.gmail.com
+      - key: MAIL_PORT
+        value: 587
+      - key: MAIL_USE_TLS
+        value: true
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_DEFAULT_SENDER
+        sync: false
+
+databases:
+  - name: client-db
+    databaseName: client_app
+    user: client_user
+    plan: free
