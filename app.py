@@ -1281,6 +1281,19 @@ def init_db():
                 db.session.commit()
                 print("✓ attachments column added")
 
+            # Alter ticket_id column to support longer IDs (VARCHAR(30) instead of VARCHAR(20))
+            # Client App generates IDs like "DUMP-20260127-7D96B3A0" which is 22 characters
+            try:
+                logging.info("Extending ticket_id column length to VARCHAR(30)...")
+                print("MIGRATION: Extending ticket_id column to VARCHAR(30)...")
+                db.session.execute(text("ALTER TABLE tickets ALTER COLUMN ticket_id TYPE VARCHAR(30)"))
+                db.session.commit()
+                print("✓ ticket_id column extended")
+            except Exception as e:
+                # Column might already be correct size, or migration already ran
+                logging.info(f"Ticket_id column extension skipped: {str(e)}")
+                db.session.rollback()
+
         # Now create any missing tables
         db.create_all()
         logging.info("Database tables created/verified successfully")
