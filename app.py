@@ -1269,6 +1269,18 @@ def init_db():
                 db.session.commit()
                 print("✓ system_config column added")
 
+        # Check tickets table for missing columns
+        if 'tickets' in inspector.get_table_names():
+            ticket_columns = [col['name'] for col in inspector.get_columns('tickets')]
+
+            # Add attachments if missing
+            if 'attachments' not in ticket_columns:
+                logging.info("Adding attachments column to tickets table...")
+                print("MIGRATION: Adding attachments column to tickets...")
+                db.session.execute(text("ALTER TABLE tickets ADD COLUMN attachments TEXT"))
+                db.session.commit()
+                print("✓ attachments column added")
+
         # Now create any missing tables
         db.create_all()
         logging.info("Database tables created/verified successfully")
