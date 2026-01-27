@@ -16,7 +16,7 @@ except ImportError:
 class GeminiAssistant:
     def __init__(self):
         self.client = None
-        self.model = "gemini-2.0-flash"
+        self.model = "gemini-2.5-flash"
         self.initialized = False
 
         # Get API key directly from environment variable
@@ -370,4 +370,5 @@ Keep it professional and technical for support staff.
                 return False, f"Unexpected response: {response.text}"
                 
         except Exception as e:
+
             return False, f"Connection test failed: {str(e)}"
