@@ -1253,6 +1253,22 @@ def init_db():
                 db.session.commit()
                 print("✓ is_active column added")
 
+            # Add created_at if missing
+            if 'created_at' not in columns:
+                logging.info("Adding created_at column to users table...")
+                print("MIGRATION: Adding created_at column...")
+                db.session.execute(text("ALTER TABLE users ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP"))
+                db.session.commit()
+                print("✓ created_at column added")
+
+            # Add system_config if missing
+            if 'system_config' not in columns:
+                logging.info("Adding system_config column to users table...")
+                print("MIGRATION: Adding system_config column...")
+                db.session.execute(text("ALTER TABLE users ADD COLUMN system_config TEXT"))
+                db.session.commit()
+                print("✓ system_config column added")
+
         # Now create any missing tables
         db.create_all()
         logging.info("Database tables created/verified successfully")
