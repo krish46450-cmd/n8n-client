@@ -826,7 +826,7 @@ def test_form_creation():
 def send_ticket_to_support_api(ticket):
     """Send ticket to support dashboard API - FIXED"""
     try:
-        support_api_url = 'http://localhost:8001/api/tickets'  # Direct URL to ensure it works
+        support_api_url = 'https://support-dashboard-lv7y.onrender.com/api/tickets'  # Direct URL to ensure it works
         print(f"DEBUG: Using API URL: {support_api_url}")  # Debug print to verify correct URL
         
         ticket_data = {
@@ -1349,4 +1349,5 @@ if __name__ == '__main__':
         host=host,
         port=port,
         use_reloader=False
+
     )
