@@ -147,8 +147,13 @@ def register():
             
         except Exception as e:
             db.session.rollback()
+            import traceback
+            error_trace = traceback.format_exc()
             logging.error(f"Registration error: {str(e)}")
-            flash('An error occurred during registration. Please try again.', 'error')
+            logging.error(f"Full traceback: {error_trace}")
+            print(f"REGISTRATION ERROR: {str(e)}")
+            print(f"TRACEBACK: {error_trace}")
+            flash(f'Registration error: {str(e)}', 'error')
     
     return render_template('auth/register.html', form=form)
 
