@@ -1078,8 +1078,20 @@ def chat():
                 image_data=image_data
             )
         else:
+            error_msg = "AI assistant unavailable: "
+            if gemini_assistant is None:
+                error_msg += "GeminiAssistant is None (failed to import or initialize)"
+                logging.error("Gemini assistant is None")
+            elif not gemini_assistant.initialized:
+                error_msg += "GeminiAssistant not initialized (check GEMINI_API_KEY)"
+                logging.error(f"Gemini assistant not initialized. Has API key: {bool(os.getenv('GEMINI_API_KEY'))}")
+
+            print(f"DEBUG: gemini_assistant={gemini_assistant}")
+            print(f"DEBUG: initialized={getattr(gemini_assistant, 'initialized', 'N/A') if gemini_assistant else 'None'}")
+            print(f"DEBUG: GEMINI_API_KEY set={bool(os.getenv('GEMINI_API_KEY'))}")
+
             ai_response = {
-                'content': "I apologize, but the AI assistant is currently unavailable. Please contact support for assistance with your issue.",
+                'content': f"I apologize, but the AI assistant is currently unavailable. {error_msg}",
                 'escalate': True,
                 'escalation_reason': 'ai_unavailable'
             }

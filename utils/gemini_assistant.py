@@ -15,23 +15,35 @@ except ImportError:
 
 class GeminiAssistant:
     def __init__(self):
-        self.config = Config()
         self.client = None
         self.model = "gemini-2.0-flash"
         self.initialized = False
-        
-        if GENAI_AVAILABLE:
-            try:
-                self.client = genai.Client(
-                    api_key=self.config.GEMINI_API_KEY
-                )
-                self.initialized = True
-                logging.info("Gemini AI initialized successfully")
-            except Exception as e:
-                logging.error(f"Failed to initialize Gemini AI: {str(e)}")
-                self.initialized = False
-        else:
+
+        # Get API key directly from environment variable
+        api_key = os.getenv('GEMINI_API_KEY')
+
+        if not api_key:
+            logging.error("GEMINI_API_KEY environment variable not set")
+            print("ERROR: GEMINI_API_KEY not found in environment variables")
+            return
+
+        if not GENAI_AVAILABLE:
             logging.error("Google GenAI library not available")
+            print("ERROR: google-genai library not installed")
+            return
+
+        try:
+            print(f"Attempting to initialize Gemini with API key: {api_key[:10]}...")
+            self.client = genai.Client(api_key=api_key)
+            self.initialized = True
+            logging.info("Gemini AI initialized successfully")
+            print("SUCCESS: Gemini AI initialized successfully")
+        except Exception as e:
+            logging.error(f"Failed to initialize Gemini AI: {str(e)}")
+            print(f"ERROR initializing Gemini: {str(e)}")
+            import traceback
+            print(traceback.format_exc())
+            self.initialized = False
     
     def get_response(self, user_message, error_code, conversation_history, image_data=None):
         """Get AI response from Gemini using the latest API (with optional image support)"""
