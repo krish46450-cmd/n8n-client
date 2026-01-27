@@ -824,11 +824,14 @@ def test_form_creation():
         return False
 
 def send_ticket_to_support_api(ticket):
-    """Send ticket to support dashboard API - FIXED"""
+    """Send ticket to support dashboard API"""
     try:
-        support_api_url = 'https://support-dashboard-lv7y.onrender.com/api/tickets'  # Direct URL to ensure it works
-        print(f"DEBUG: Using API URL: {support_api_url}")  # Debug print to verify correct URL
-        
+        # Hard-coded URL for now since env vars aren't reliable on Render
+        support_api_url = 'https://support-dashboard-lv7y.onrender.com/api/tickets'
+        support_api_key = os.getenv('SUPPORT_API_KEY', '')
+
+        print(f"DEBUG: Using API URL: {support_api_url}")
+        print(f"DEBUG: Has API key: {bool(support_api_key)}")
         ticket_data = {
             'ticket_id': ticket.ticket_id,
             'user_id': ticket.user_id,
@@ -842,29 +845,43 @@ def send_ticket_to_support_api(ticket):
             'created_at': ticket.created_at.isoformat(),
             'system_config': ticket.user.get_system_config_dict()
         }
-        
+
+        headers = {'Content-Type': 'application/json'}
+        if support_api_key:
+            headers['Authorization'] = f'Bearer {support_api_key}'
+
         logging.info(f"Sending ticket to support API: {support_api_url}")
         logging.info(f"Ticket data: {ticket_data}")
-        
+        print(f"Sending ticket {ticket.ticket_id} to {support_api_url}")
+
         response = requests.post(
             support_api_url,
             json=ticket_data,
             timeout=10,
-            headers={'Content-Type': 'application/json'}
+            headers=headers
         )
-        
+
+        print(f"Response status: {response.status_code}")
+        print(f"Response body: {response.text}")
+
         if response.status_code == 201:
             logging.info(f"Ticket {ticket.ticket_id} sent to support dashboard successfully")
+            print(f"SUCCESS: Ticket {ticket.ticket_id} sent to support dashboard")
             return True
         else:
             logging.error(f"Failed to send ticket to support dashboard: {response.status_code} - {response.text}")
+            print(f"ERROR: Failed to send ticket: {response.status_code} - {response.text}")
             return False
-            
+
     except requests.exceptions.RequestException as e:
         logging.error(f"Network error sending ticket to support API: {str(e)}")
+        print(f"NETWORK ERROR: {str(e)}")
         return False
     except Exception as e:
         logging.error(f"Error sending ticket to support API: {str(e)}")
+        print(f"EXCEPTION: {str(e)}")
+        import traceback
+        print(traceback.format_exc())
         return False
 # def send_ticket_to_support_api(ticket):
 #     """Send ticket to support dashboard API"""
