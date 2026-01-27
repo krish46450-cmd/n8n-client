@@ -47,13 +47,17 @@ class GeminiAssistant:
     
     def get_response(self, user_message, error_code, conversation_history, image_data=None):
         """Get AI response from Gemini using the latest API (with optional image support)"""
+        print(f"DEBUG get_response called: initialized={self.initialized}, has_client={self.client is not None}")
         try:
             if not self.initialized:
+                print("ERROR: get_response called but initialized=False")
                 return {
                     'content': "AI assistant is currently unavailable. Please contact support for assistance.",
                     'escalate': True,
                     'escalation_reason': 'ai_unavailable'
                 }
+
+            print(f"DEBUG: Processing message: {user_message[:50]}...")
 
             # Build conversation context
             context = self._build_context(error_code, conversation_history)
@@ -110,8 +114,8 @@ Response format should be conversational and helpful. If escalation is needed, e
             # Generate content configuration
             generate_content_config = types.GenerateContentConfig(
                 tools=tools,
-                temperature=self.config.GEMINI_TEMPERATURE,
-                max_output_tokens=self.config.GEMINI_MAX_TOKENS,
+                temperature=0.7,
+                max_output_tokens=1024,
             )
             
             # Generate response
@@ -142,6 +146,11 @@ Response format should be conversational and helpful. If escalation is needed, e
             
         except Exception as e:
             logging.error(f"Error getting AI response: {str(e)}")
+            print(f"ERROR in get_response: {str(e)}")
+            import traceback
+            traceback_str = traceback.format_exc()
+            logging.error(f"Full traceback: {traceback_str}")
+            print(f"Full traceback:\n{traceback_str}")
             return {
                 'content': "I'm having trouble processing your request right now. Let me connect you with human support.",
                 'escalate': True,
@@ -215,6 +224,11 @@ Response format should be conversational and helpful. If escalation is needed, e
             
         except Exception as e:
             logging.error(f"Error getting AI response: {str(e)}")
+            print(f"ERROR in get_response: {str(e)}")
+            import traceback
+            traceback_str = traceback.format_exc()
+            logging.error(f"Full traceback: {traceback_str}")
+            print(f"Full traceback:\n{traceback_str}")
             return {
                 'content': "I'm having trouble processing your request right now. Let me connect you with human support.",
                 'escalate': True,
