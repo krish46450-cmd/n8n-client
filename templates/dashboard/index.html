@@ -457,20 +457,29 @@ function startScan() {
     // Start progress animation
     animateProgress();
     
-    // Make scan request
+    // Make scan request with timeout
     $.ajax({
         url: '/scan',
         method: 'POST',
+        timeout: 30000, // 30 second timeout
         success: function(response) {
             hideLoadingModal();
 
             if (response.status === 'success') {
-                // Show success notification
-                showAlert('success', `Scan completed! Found ${response.count} dump file(s) for analysis.`);
+                // Show success notification with optional warning
+                let message = `Scan completed in ${response.scan_time || 0}s! Found ${response.count} dump file(s) for analysis.`;
+                if (response.warning) {
+                    message += '\n\nNote: ' + response.warning;
+                    showAlert('warning', message);
+                } else {
+                    showAlert('success', message);
+                }
 
-                // Redirect to results page
-                const resultsUrl = '/scan_results?results=' + encodeURIComponent(JSON.stringify(response.results));
-                window.location.href = resultsUrl;
+                // Redirect to results page after a brief delay to show the message
+                setTimeout(function() {
+                    const resultsUrl = '/scan_results?results=' + encodeURIComponent(JSON.stringify(response.results));
+                    window.location.href = resultsUrl;
+                }, response.warning ? 2000 : 1000);
             } else if (response.status === 'no_files') {
                 showAlert('info', 'No dump files found. Your system appears to be running smoothly!');
             } else if (response.status === 'not_supported') {
@@ -479,15 +488,19 @@ function startScan() {
         },
         error: function(xhr, status, error) {
             hideLoadingModal();
-            console.error('Scan error:', error);
-            
+            console.error('Scan error:', error, 'status:', status);
+
             let errorMessage = 'Scan failed. Please try again.';
-            if (xhr.status === 403) {
+            if (status === 'timeout') {
+                errorMessage = 'Scan timed out. This can happen with many dump files. Try clearing old dump files or contact support for assistance.';
+            } else if (xhr.status === 403) {
                 errorMessage = 'Access denied. Please run as administrator for system directory access.';
             } else if (xhr.status === 500) {
                 errorMessage = 'Server error occurred. Please contact support if the issue persists.';
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                errorMessage = xhr.responseJSON.message;
             }
-            
+
             showAlert('error', errorMessage);
         }
     });

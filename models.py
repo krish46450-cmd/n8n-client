@@ -4,6 +4,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import uuid
+import json
 
 db = SQLAlchemy()
 
@@ -129,7 +130,16 @@ class Ticket(db.Model):
     def can_be_updated_by_user(self):
         """Check if user can still update this ticket"""
         return self.status in [self.STATUS_OPEN, self.STATUS_IN_PROGRESS, self.STATUS_PENDING_USER]
-    
+
+    def get_attachments(self):
+        """Parse and return attachments as a list"""
+        if not self.attachments:
+            return []
+        try:
+            return json.loads(self.attachments)
+        except:
+            return []
+
     def __repr__(self):
         return f'<Ticket {self.ticket_id}>'
 

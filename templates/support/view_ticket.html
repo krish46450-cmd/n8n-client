@@ -114,7 +114,25 @@
                     <code class="fs-5">{{ ticket.error_code }}</code>
                 </div>
                 {% endif %}
-                
+
+                {% if ticket.get_attachments() %}
+                <div class="mt-4">
+                    <h6><i class="fas fa-paperclip me-2"></i>Attachments</h6>
+                    <div class="row mt-3">
+                        {% for attachment in ticket.get_attachments() %}
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <img src="{{ url_for('static', filename='uploads/' ~ attachment) }}" class="card-img-top" alt="Attachment" style="max-height: 200px; object-fit: cover; cursor: pointer;" onclick="window.open(this.src, '_blank')">
+                                <div class="card-body p-2">
+                                    <small class="text-muted">{{ attachment.split('/')[-1] }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
                 {% if ticket.solution %}
                 <div class="mt-4 p-3 bg-light rounded">
                     <h6><i class="fas fa-lightbulb me-2 text-success"></i>Solution Provided</h6>

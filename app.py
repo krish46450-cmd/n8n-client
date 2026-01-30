@@ -319,8 +319,10 @@ def scan_dumps():
     """Initiate dump file scan"""
     try:
         import platform
+        from time import time
 
         logging.info(f"Starting dump file scan for user: {current_user.username}")
+        scan_start_time = time()
 
         # Check if running on Windows
         if platform.system() != 'Windows':
@@ -337,13 +339,28 @@ def scan_dumps():
         # Scan for dump files
         scan_results = file_scanner.scan_directories()
         logging.info(f"Scan found {len(scan_results) if scan_results else 0} files")
-        
+
         if not scan_results:
             return jsonify({"status": "no_files", "message": "No dump files found"})
-        
-        # Analyze found dump files
+
+        # Limit to most recent 10 dump files to avoid timeout
+        MAX_FILES_TO_ANALYZE = 10
+        if len(scan_results) > MAX_FILES_TO_ANALYZE:
+            logging.info(f"Limiting analysis to {MAX_FILES_TO_ANALYZE} most recent files (found {len(scan_results)})")
+            # Sort by modification time (most recent first) and take top 10
+            scan_results = sorted(scan_results, key=lambda x: x.get('modified', 0), reverse=True)[:MAX_FILES_TO_ANALYZE]
+
+        # Analyze found dump files with timeout protection
         analysis_results = []
+        MAX_SCAN_TIME = 25  # Maximum 25 seconds for entire scan
+
         for i, dump_file in enumerate(scan_results):
+            # Check if we're approaching timeout
+            elapsed_time = time() - scan_start_time
+            if elapsed_time > MAX_SCAN_TIME:
+                logging.warning(f"Scan timeout approaching after {elapsed_time:.1f}s, stopping at {i}/{len(scan_results)} files")
+                break
+
             try:
                 logging.info(f"Processing file {i+1}/{len(scan_results)}: {dump_file.get('filename', 'unknown')}")
                 
@@ -430,14 +447,25 @@ def scan_dumps():
         except Exception as e:
             logging.error(f"Error saving analyses: {str(e)}")
             db.session.rollback()
-        
-        logging.info(f"Scan completed. Analyzed {len(analysis_results)} dumps")
-        
-        return jsonify({
+
+        # Calculate scan duration
+        scan_duration = time() - scan_start_time
+        logging.info(f"Scan completed in {scan_duration:.1f}s. Analyzed {len(analysis_results)} dumps")
+
+        # Prepare response with additional info
+        response_data = {
             "status": "success",
             "results": analysis_results,
-            "count": len(analysis_results)
-        })
+            "count": len(analysis_results),
+            "scan_time": round(scan_duration, 2)
+        }
+
+        # Add warning if we hit limits
+        total_files_found = len(file_scanner.scan_directories()) if file_scanner else 0
+        if total_files_found > len(analysis_results):
+            response_data["warning"] = f"Analyzed {len(analysis_results)} most recent files out of {total_files_found} found to optimize performance."
+
+        return jsonify(response_data)
         
     except Exception as e:
         logging.error(f"Error during scan: {str(e)}")

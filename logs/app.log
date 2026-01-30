@@ -2557,3 +2557,15 @@ WHERE tickets.user_id = ? ORDER BY tickets.created_at DESC
 2026-01-23 13:50:58,305 INFO: 127.0.0.1 - - [23/Jan/2026 13:50:58] "GET / HTTP/1.1" 200 -
 2026-01-23 13:50:58,316 INFO: 127.0.0.1 - - [23/Jan/2026 13:50:58] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
 2026-01-23 13:50:58,317 INFO: 127.0.0.1 - - [23/Jan/2026 13:50:58] "[36mGET /static/js/main.js HTTP/1.1[0m" 304 -
+2026-01-30 21:50:06,277 INFO: DumpAnalyzer initialized successfully
+2026-01-30 21:50:06,277 INFO: FileScanner initialized successfully
+2026-01-30 21:50:06,277 INFO: KnowledgeBase initialized successfully
+2026-01-30 21:50:06,495 INFO: Gemini AI initialized successfully
+2026-01-30 21:50:06,495 INFO: GeminiAssistant initialized successfully
+2026-01-30 21:50:06,496 WARNING: Email notifications disabled - MAIL_USERNAME or MAIL_PASSWORD not configured
+2026-01-30 21:50:06,496 INFO: EmailNotifier initialized successfully
+2026-01-30 21:50:06,502 INFO: Extending ticket_id column length to VARCHAR(30)...
+2026-01-30 21:50:06,503 INFO: Ticket_id column extension skipped: (sqlite3.OperationalError) near "ALTER": syntax error
+[SQL: ALTER TABLE tickets ALTER COLUMN ticket_id TYPE VARCHAR(30)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-01-30 21:50:06,503 INFO: Database tables created/verified successfully
