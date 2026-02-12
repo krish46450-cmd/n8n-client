@@ -1,5 +1,5 @@
 # app.py - Updated Flask application with user authentication and ticket system
-from flask import Flask, render_template, request, jsonify, session, flash, redirect, url_for, abort
+from flask import Flask, render_template, request, jsonify, session, flash, redirect, url_for, abort, send_from_directory
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_migrate import Migrate
 from werkzeug.security import check_password_hash
@@ -483,6 +483,12 @@ def scan_results():
         logging.error(f"Error loading scan results: {str(e)}")
         flash("Error loading scan results", "error")
         return redirect(url_for('index'))
+
+# Serve uploaded files
+@app.route('/static/uploads/<path:filename>')
+def uploaded_file(filename):
+    """Serve uploaded files from the uploads directory"""
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # Ticket Management Routes
 @app.route('/support')

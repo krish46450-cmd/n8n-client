@@ -2569,3 +2569,41 @@ WHERE tickets.user_id = ? ORDER BY tickets.created_at DESC
 [SQL: ALTER TABLE tickets ALTER COLUMN ticket_id TYPE VARCHAR(30)]
 (Background on this error at: https://sqlalche.me/e/20/e3q8)
 2026-01-30 21:50:06,503 INFO: Database tables created/verified successfully
+2026-02-12 23:43:46,024 INFO: DumpAnalyzer initialized successfully
+2026-02-12 23:43:46,024 INFO: FileScanner initialized successfully
+2026-02-12 23:43:46,025 INFO: KnowledgeBase initialized successfully
+2026-02-12 23:43:46,236 INFO: Gemini AI initialized successfully
+2026-02-12 23:43:46,237 INFO: GeminiAssistant initialized successfully
+2026-02-12 23:43:46,237 WARNING: Email notifications disabled - MAIL_USERNAME or MAIL_PASSWORD not configured
+2026-02-12 23:43:46,237 INFO: EmailNotifier initialized successfully
+2026-02-12 23:43:46,243 INFO: Extending ticket_id column length to VARCHAR(30)...
+2026-02-12 23:43:46,244 INFO: Ticket_id column extension skipped: (sqlite3.OperationalError) near "ALTER": syntax error
+[SQL: ALTER TABLE tickets ALTER COLUMN ticket_id TYPE VARCHAR(30)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-02-12 23:43:46,244 INFO: Database tables created/verified successfully
+2026-02-12 23:45:18,799 INFO: DumpAnalyzer initialized successfully
+2026-02-12 23:45:18,799 INFO: FileScanner initialized successfully
+2026-02-12 23:45:18,799 INFO: KnowledgeBase initialized successfully
+2026-02-12 23:45:18,979 INFO: Gemini AI initialized successfully
+2026-02-12 23:45:18,979 INFO: GeminiAssistant initialized successfully
+2026-02-12 23:45:18,979 WARNING: Email notifications disabled - MAIL_USERNAME or MAIL_PASSWORD not configured
+2026-02-12 23:45:18,979 INFO: EmailNotifier initialized successfully
+2026-02-12 23:45:18,984 INFO: Extending ticket_id column length to VARCHAR(30)...
+2026-02-12 23:45:18,985 INFO: Ticket_id column extension skipped: (sqlite3.OperationalError) near "ALTER": syntax error
+[SQL: ALTER TABLE tickets ALTER COLUMN ticket_id TYPE VARCHAR(30)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-02-12 23:45:18,986 INFO: Database tables created/verified successfully
+2026-02-12 23:48:09,537 INFO: DumpAnalyzer initialized successfully
+2026-02-12 23:48:09,537 INFO: FileScanner initialized successfully
+2026-02-12 23:48:09,538 INFO: KnowledgeBase initialized successfully
+2026-02-12 23:48:09,627 INFO: Gemini AI initialized successfully
+2026-02-12 23:48:09,627 INFO: GeminiAssistant initialized successfully
+2026-02-12 23:48:09,627 WARNING: Email notifications disabled - MAIL_USERNAME or MAIL_PASSWORD not configured
+2026-02-12 23:48:09,628 INFO: EmailNotifier initialized successfully
+2026-02-12 23:48:09,633 INFO: Extending ticket_id column length to VARCHAR(30)...
+2026-02-12 23:48:09,633 INFO: Ticket_id column extension skipped: (sqlite3.OperationalError) near "ALTER": syntax error
+[SQL: ALTER TABLE tickets ALTER COLUMN ticket_id TYPE VARCHAR(30)]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-02-12 23:48:09,634 INFO: Database tables created/verified successfully
+2026-02-12 23:48:22,121 INFO: User logged in: test@mail.com
+2026-02-12 23:48:45,674 INFO: User logged out: test@mail.com
